@@ -27,11 +27,16 @@ long_line_behaviour=1
 long_line_column=72
 
 [files]
-current_page=3
-FILE_NAME_0=371;None;0;EUTF-8;1;1;0;%2Fhome%2Flinux%2Fprojects%2Fmyportfolio%2Fsrc%2FApp.tsx;0;4
-FILE_NAME_1=475;None;0;EUTF-8;1;1;0;%2Fhome%2Flinux%2Fprojects%2Fmyportfolio%2Fsrc%2Flayout%2Fmain.layout.component.tsx;0;4
-FILE_NAME_2=486;TypeScript;0;EUTF-8;1;1;0;%2Fhome%2Flinux%2Fprojects%2Fmyportfolio%2Fsrc%2Fcontext%2Ftheme%2Ftheme.context.component.tsx;0;4
-FILE_NAME_3=489;HTML;0;EUTF-8;1;1;0;%2Fhome%2Flinux%2Fprojects%2Fmyportfolio%2Findex.html;0;4
+current_page=7
+FILE_NAME_0=881;HTML;0;EUTF-8;1;1;0;%2Fhome%2Flinux%2Fprojects%2Fdemo%2Ftestweb.html;0;4
+FILE_NAME_1=9046;HTML;0;EUTF-8;1;1;0;%2Fhome%2Flinux%2Fprojects%2Fdemo%2Findex2.html;0;4
+FILE_NAME_2=12025;HTML;0;EUTF-8;1;1;0;%2Fhome%2Flinux%2Fprojects%2Fdemo%2Fproject5.html;0;4
+FILE_NAME_3=354;None;0;EUTF-8;1;1;0;%2Fhome%2Flinux%2Fprojects%2Fmyportfolio%2Fsrc%2Fpages%2Fwork%2Findex.tsx;0;4
+FILE_NAME_4=542;None;0;EUTF-8;1;1;0;%2Fhome%2Flinux%2Fprojects%2Fmyportfolio%2Fsrc%2Fcomponents%2Fwork%2Fcore.work.component.tsx;0;4
+FILE_NAME_5=1244;None;0;EUTF-8;1;1;0;%2Fhome%2Flinux%2Fprojects%2Fmyportfolio%2Fsrc%2Fcomponents%2Fwork%2Fsections%2Fhero.section.work.component.tsx;0;4
+FILE_NAME_6=405;None;0;EUTF-8;1;1;0;%2Fhome%2Flinux%2Fprojects%2Fmyportfolio%2Fsrc%2Fcomponents%2Fwork%2Fsections%2Fphilosophy.section.work.component.tsx;0;4
+FILE_NAME_7=3471;None;0;EUTF-8;1;1;0;%2Fhome%2Flinux%2Fprojects%2Fmyportfolio%2Fsrc%2Fcomponents%2Fwork%2Fsections%2Fworklist.section.work.component.tsx;0;4
+FILE_NAME_8=10502;None;0;EUTF-8;1;1;0;%2Fhome%2Flinux%2Fprojects%2Fmyportfolio%2Fsrc%2Flayout%2Fmain.layout.component.tsx;0;4
 
 [VTE]
 last_dir=/home/linux
