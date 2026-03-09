@@ -1,11 +1,16 @@
 // Required imports
-import { Box, useTheme, Grid } from '@mui/material'
-import { useContext } from 'react'
+import { Box, useTheme, Grid, Modal, Fade } from '@mui/material'
+import { useContext, useState } from 'react'
 import { ThemeContext } from './../../../context/theme/theme.context.component.tsx'
 
 export function WorkListSectionWorkPageComponent() {
 	const { currentTheme } = useContext(ThemeContext)
 	const theme = useTheme()
+	
+	// Preview modal state
+	const [previewOpen, setPreviewOpen] = useState(false)
+	const [previewUrl, setPreviewUrl] = useState('')
+	const [previewTitle, setPreviewTitle] = useState('')
 	
 	// Helper function to get accent secondary color
 	const getAccentSecondary = () => {
@@ -46,30 +51,53 @@ export function WorkListSectionWorkPageComponent() {
 	// Filter categories
 	const filterCategories = ['All', 'Web Apps', 'Backend', 'Experiments', 'Tools']
 	
-	// Project data
+	// Project data with demo URLs
 	const projects = [
 		{
 			icon: '📚',
 			title: 'Task Library',
 			description: 'async task queue with retry & schedule.',
 			tech: ['rust', 'wasm', 'js'],
-			links: { github: '#' }
+			links: { 
+				github: '#',
+				demo: 'https://www.wikipedia.org' 
+			}
 		},
 		{
 			icon: '🌀',
 			title: 'WebSocket Terminal',
 			description: 'browser-based terminal over websockets.',
 			tech: ['go', 'websocket', 'react'],
-			links: { github: '#', demo: '#' }
+			links: { 
+				github: '#', 
+				demo: 'https://www.bbc.com' 
+			}
 		},
 		{
 			icon: '⌨️',
-			title: 'Typing Practice',
+			title: 'Practice Typing',
 			description: 'minimal typing test with code snippets.',
-			tech: ['vue', 'indexedDB'],
-			links: { github: '#', demo: '#' }
+			tech: ['react.js', 'typescript', 'mui'],
+			links: { 
+				github: 'https://github.com/bala-murali-k/typing', 
+				demo: 'https://typing-xo4r.onrender.com' 
+			}
 		},
 	]
+	
+	// Handle demo click
+	const handleDemoClick = (e, url, title) => {
+		e.preventDefault()
+		setPreviewUrl(url)
+		setPreviewTitle(title)
+		setPreviewOpen(true)
+	}
+	
+	// Handle close preview
+	const handleClosePreview = () => {
+		setPreviewOpen(false)
+		setPreviewUrl('')
+	}
 	
 	return (
 		<Box 
@@ -129,7 +157,7 @@ export function WorkListSectionWorkPageComponent() {
 			{/* Project Grid */}
 			<Grid 
 				container 
-				spacing={3}
+				spacing={2}
 				sx={{
 					mt: 2,
 				}}
@@ -157,6 +185,7 @@ export function WorkListSectionWorkPageComponent() {
 								display: 'flex',
 								flexDirection: 'column',
 								transition: 'transform 0.1s ease, box-shadow 0.1s ease',
+								height: '100%',
 								'&:hover': {
 									transform: 'translate(-4px, -4px)',
 									boxShadow: `12px 12px 0 ${currentTheme === 'highcontrast' 
@@ -253,21 +282,30 @@ export function WorkListSectionWorkPageComponent() {
 								))}
 							</Box>
 
-							{/* Card Links */}
+							{/* Card Actions */}
 							<Box
-								className="card-links"
+								className="card-actions"
 								sx={{
 									display: 'flex',
 									gap: 2,
 									mt: 'auto',
 									pt: 2,
-									fontFamily: '"JetBrains Mono", "Space Mono", monospace'
+									fontFamily: '"JetBrains Mono", "Space Mono", monospace',
+									flexWrap: 'wrap',
+									alignItems: 'center'
 								}}
 							>
 								{project.links.github && (
 									<Box
 										component="a"
 										href={project.links.github}
+										target='_blank'
+										rel="noopener"
+										// onClick={(e) => {
+										// 	e.preventDefault()
+										// 	console.log('RRRRRRRRRR ', project.links.github)
+										// 	// alert('GitHub repo (simulated)')
+										// }}
 										sx={{
 											color: theme.palette.text.primary,
 											textDecoration: 'none',
@@ -276,6 +314,7 @@ export function WorkListSectionWorkPageComponent() {
 											borderColor: currentTheme === 'highcontrast' 
 												? theme.palette.primary.a30 
 												: theme.palette.primary.main,
+											cursor: 'pointer',
 											'&:hover': {
 												background: currentTheme === 'highcontrast' 
 													? theme.palette.primary.a30 
@@ -293,6 +332,7 @@ export function WorkListSectionWorkPageComponent() {
 									<Box
 										component="a"
 										href={project.links.demo}
+										onClick={(e) => handleDemoClick(e, project.links.demo, project.title)}
 										sx={{
 											color: theme.palette.text.primary,
 											textDecoration: 'none',
@@ -301,6 +341,7 @@ export function WorkListSectionWorkPageComponent() {
 											borderColor: currentTheme === 'highcontrast' 
 												? theme.palette.primary.a30 
 												: theme.palette.primary.main,
+											cursor: 'pointer',
 											'&:hover': {
 												background: currentTheme === 'highcontrast' 
 													? theme.palette.primary.a30 
@@ -314,11 +355,145 @@ export function WorkListSectionWorkPageComponent() {
 										Demo
 									</Box>
 								)}
+								{project.links.demo && (
+									<Box
+										component="a"
+										href={project.links.demo}
+										target="_blank"
+										rel="noopener"
+										sx={{
+											marginLeft: 'auto',
+											color: theme.palette.text.primary,
+											textDecoration: 'none',
+											fontWeight: 600,
+											fontSize: '0.85rem',
+											textTransform: 'uppercase',
+											letterSpacing: '0.5px',
+											background: theme.palette.background.paper,
+											border: '2px solid',
+											borderColor: currentTheme === 'highcontrast' 
+												? theme.palette.primary.a30 
+												: '#000',
+											px: 1,
+											py: 0.5,
+											boxShadow: `3px 3px 0 ${currentTheme === 'highcontrast' 
+												? theme.palette.primary.a10 
+												: '#000'}`,
+											'&:hover': {
+												background: currentTheme === 'highcontrast' 
+													? theme.palette.primary.a30 
+													: theme.palette.primary.main,
+												color: currentTheme === 'highcontrast' 
+													? '#000' 
+													: theme.palette.background.default
+											}
+										}}
+									>
+										↗ new tab
+									</Box>
+								)}
 							</Box>
 						</Box>
 					</Grid>
 				))}
 			</Grid>
+
+			{/* Preview Modal */}
+			<Modal
+				open={previewOpen}
+				onClose={handleClosePreview}
+				closeAfterTransition
+				sx={{
+					display: 'flex',
+					alignItems: 'center',
+					justifyContent: 'center',
+					p: 2
+				}}
+			>
+				<Fade in={previewOpen}>
+					<Box
+						sx={{
+							width: '100%',
+							maxWidth: '1100px',
+							height: '80vh',
+							bgcolor: theme.palette.background.paper,
+							border: '3px solid',
+							borderColor: currentTheme === 'highcontrast' 
+								? theme.palette.primary.a30 
+								: '#000',
+							boxShadow: `6px 6px 0 ${currentTheme === 'highcontrast' 
+								? theme.palette.primary.a10 
+								: '#000'}`,
+							display: 'flex',
+							flexDirection: 'column'
+						}}
+					>
+						{/* Modal Header */}
+						<Box
+							sx={{
+								display: 'flex',
+								justifyContent: 'space-between',
+								alignItems: 'center',
+								p: '1rem 1.5rem',
+								borderBottom: '3px solid',
+								borderColor: currentTheme === 'highcontrast' 
+									? theme.palette.primary.a30 
+									: '#000',
+								fontFamily: '"JetBrains Mono", "Space Mono", monospace'
+							}}
+						>
+							<Box
+								sx={{
+									fontSize: '1.4rem',
+									fontWeight: 600,
+									color: theme.palette.text.primary
+								}}
+							>
+								preview · {previewTitle}
+							</Box>
+							<Box
+								component="button"
+								onClick={handleClosePreview}
+								sx={{
+									background: 'none',
+									border: 'none',
+									fontSize: '2rem',
+									cursor: 'pointer',
+									color: theme.palette.text.primary,
+									lineHeight: 1,
+									padding: '0 0.5rem',
+									'&:hover': {
+										color: theme.palette.primary.main
+									}
+								}}
+							>
+								✕
+							</Box>
+						</Box>
+
+						{/* Modal Content - Iframe */}
+						<Box
+							sx={{
+								flex: 1,
+								overflow: 'hidden',
+								bgcolor: '#fff'
+							}}
+						>
+							<iframe
+								src={previewUrl}
+								title={`Preview - ${previewTitle}`}
+								sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-modals allow-downloads allow-storage-access-by-user-activation"
+								style={{
+									width: '100%',
+									height: '100%',
+									border: 'none',
+									background: '#fff'
+								}}
+							/>
+						</Box>
+					</Box>
+				</Fade>
+			</Modal>
 		</Box>
 	)
 }

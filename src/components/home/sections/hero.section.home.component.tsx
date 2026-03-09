@@ -1,4 +1,5 @@
 // Required imports
+import { Link } from 'react-router-dom'
 import { Box, useTheme } from '@mui/material'
 import { useContext } from 'react'
 import { ThemeContext } from './../../../context/theme/theme.context.component.tsx'
@@ -173,9 +174,9 @@ export function HeroSectionHomePageComponent ({  }) {
 					}}
 				>
 					<Box
-						component="a"
-						href="#"
-						className="btn-primary"
+						component={Link}
+						to="/work"
+						key="Home"
 						sx={{
 							fontFamily: '"JetBrains Mono", monospace',
 							fontWeight: 600,
@@ -184,22 +185,30 @@ export function HeroSectionHomePageComponent ({  }) {
 							padding: '0.8rem 2.2rem',
 							backgroundColor: theme.palette.mode === 'light' ? '#000' : 'transparent',
 							color: theme.palette.mode === 'light' 
-								? '#fff' 
-								: currentTheme === 'highcontrast' 
-								? theme.palette.primary.a30 
-								: theme.palette.text.primary,
+							? '#fff' 
+							: currentTheme === 'highcontrast' 
+							? theme.palette.primary.a30 
+							: theme.palette.text.primary,
 							border: '3px solid',
 							borderColor: currentTheme === 'highcontrast' 
-								? theme.palette.primary.a30 
-								: '#000',
+							? theme.palette.primary.a30 
+							: '#000',
 							boxShadow: `6px 6px 0 ${getAccentSecondary()}`,
 							transition: 'all 0.15s',
 							cursor: 'pointer',
 							display: 'inline-block',
 							'&:hover': {
-								transform: 'translate(4px, 4px)',
-								boxShadow: `2px 2px 0 ${getAccentSecondary()}`
+							transform: 'translate(4px, 4px)',
+							boxShadow: `2px 2px 0 ${getAccentSecondary()}`
 							}
+						}}
+						onMouseEnter={(e) => {
+							e.currentTarget.style.transform = 'translate(2px, 2px)';
+							e.currentTarget.style.boxShadow = `3px 3px 0 ${theme.palette.mode === 'highcontrast' ? '#ffff00' : theme.palette.primary.a40}`;
+						}}
+						onMouseLeave={(e) => {
+							e.currentTarget.style.transform = 'translate(0, 0)';
+							e.currentTarget.style.boxShadow = `6px 6px 0 ${theme.palette.mode === 'highcontrast' ? '#ffff00' : theme.palette.primary.a40}`;
 						}}
 					>
 						view projects
