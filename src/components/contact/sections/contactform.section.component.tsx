@@ -1,56 +1,104 @@
 // Required imports
 import { Box, useTheme, Grid } from '@mui/material'
-import { useContext } from 'react'
+import { useContext, useRef, useState } from 'react'
 import { ThemeContext } from './../../../context/theme/theme.context.component.tsx'
+import emailjs from '@emailjs/browser'
 
 export function ContactFormsSectionContactPageComponent() {
     const { currentTheme } = useContext(ThemeContext)
     const theme = useTheme()
+    const formRef = useRef<HTMLFormElement>(null)
+    const [isSubmitting, setIsSubmitting] = useState(false)
+    const [submitStatus, setSubmitStatus] = useState<{
+        type: 'success' | 'error' | null;
+        message: string;
+    }>({ type: null, message: '' })
 
-    // Form submission handler
-    const handleSubmit = (event: any) => {
-        event.preventDefault()
-        const form = event.target
-        const name = form.name.value.trim()
-        const email = form.email.value.trim()
-        const message = form.message.value.trim()
+    // Form submission handler - SENDS REAL EMAILS
+// Form submission handler - SENDS REAL EMAILS with your template
+const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    setIsSubmitting(true)
+    setSubmitStatus({ type: null, message: '' })
 
-        if (!name || !email || !message) {
-            alert('❌ please fill in all required fields (name, email, message)')
-            return false
+    const form = event.currentTarget
+    const name = form.name.value.trim()
+    const email = form.email.value.trim()
+    const subject = form.subject.value.trim() || 'No subject provided'
+    const message = form.message.value.trim()
+
+    // Validation
+    if (!name || !email || !message) {
+        setSubmitStatus({
+            type: 'error',
+            message: 'Please fill in all required fields (name, email, message)'
+        })
+        setIsSubmitting(false)
+        return
+    }
+    
+    if (!email.includes('@') || !email.includes('.')) {
+        setSubmitStatus({
+            type: 'error',
+            message: 'Please enter a valid email address'
+        })
+        setIsSubmitting(false)
+        return
+    }
+
+    try {
+        // Prepare template parameters to match your EmailJS template
+        const templateParams = {
+            to_name: 'Bala', // or you can make this dynamic
+            from_name: name,
+            name: name,
+            email: email,
+            subject: subject,
+            message: message,
+            title: subject, // For the subject line: "Contact Us: {{title}}"
+            reply_to: email
         }
-        if (!email.includes('@') || !email.includes('.')) {
-            alert('❌ enter a valid email address')
-            return false
+
+        // Send email using EmailJS
+        const result = await emailjs.send(
+            import.meta.env.VITE_EMAILJS_SERVICE_ID,
+            import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+            templateParams,
+            import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+        )
+
+        if (result.status === 200) {
+            setSubmitStatus({
+                type: 'success',
+                message: '✓ Message sent successfully! Thank you for reaching out.'
+            })
+            form.reset()
+        } else {
+            throw new Error('Failed to send email')
         }
-        alert('✓ message sent (simulated) — thank you for reaching out!')
-        form.reset()
-        return false
+    } catch (error) {
+        console.error('Email error:', error)
+        setSubmitStatus({
+            type: 'error',
+            message: '❌ Failed to send message. Please try again later.'
+        })
+    } finally {
+        setIsSubmitting(false)
     }
-
-    // Info link click handlers
-    const handleGithubClick = (e) => {
-    }
-
-    const handleLinkedinClick = (e) => {
-        e.preventDefault()
-        alert('linkedin profile (simulated)')
-    }
+}
     
     return (
         <Box 
             className="contact-forms-section"
             sx={{
-                my: { xs: 4, md: 6 }
+                py: { xs: 4, md: 6 },
             }}
         >
             {/* Two Column Grid */}
             <Grid 
                 container 
                 spacing={2}
-                sx={{
-                    mt: 2,
-                }}
+                sx={{ mt: 2 }}
             >
                 {/* LEFT SIDE: CONTACT FORM CARD */}
                 <Grid item size={{ xs:12, md:6 }}>
@@ -84,6 +132,7 @@ export function ContactFormsSectionContactPageComponent() {
                                 fontWeight: 600,
                                 mb: 3,
                                 borderLeft: '3px solid',
+                                color: theme.palette.text.primary,
                                 borderColor: currentTheme === 'highcontrast' 
                                     ? theme.palette.primary.a30 
                                     : theme.palette.primary.main,
@@ -95,9 +144,11 @@ export function ContactFormsSectionContactPageComponent() {
 
                         <Box
                             component="form"
+                            ref={formRef}
                             id="contactForm"
                             onSubmit={handleSubmit}
                             sx={{ width: '100%' }}
+                            noValidate
                         >
                             {/* Name field */}
                             <Box sx={{ mb: 2.5 }}>
@@ -115,38 +166,41 @@ export function ContactFormsSectionContactPageComponent() {
                                         color: theme.palette.text.primary
                                     }}
                                 >
-                                    name
+                                    name <Box component="span" sx={{ color: theme.palette.error.main }}>*</Box>
                                 </Box>
-                                <Box
-                                    component="input"
-                                    type="text"
-                                    id="name"
-                                    name="name"
-                                    placeholder="your name"
-                                    required
-                                    sx={{
-                                        width: '100%',
-                                        background: theme.palette.background.default,
-                                        border: '3px solid',
-                                        borderColor: currentTheme === 'highcontrast' 
-                                            ? theme.palette.primary.a30 
-                                            : '#000',
-                                        p: '0.8rem 1rem',
-                                        fontFamily: '"Inter", sans-serif',
-                                        fontSize: '1rem',
-                                        color: theme.palette.text.primary,
-                                        boxShadow: `4px 4px 0 ${currentTheme === 'highcontrast' 
-                                            ? theme.palette.primary.a10 
-                                            : '#000'}`,
-                                        transition: 'all 0.1s',
-                                        '&:focus': {
-                                            outline: 'none',
-                                            borderColor: theme.palette.primary.main,
-                                            boxShadow: `6px 6px 0 ${theme.palette.primary.main}`,
-                                            transform: 'translate(-2px, -2px)'
-                                        }
-                                    }}
-                                />
+                                <Box sx={{ display: 'flex', width: '100%' }}>
+                                    <Box
+                                        component="input"
+                                        type="text"
+                                        id="name"
+                                        name="name"
+                                        placeholder="your name"
+                                        required
+                                        sx={{
+                                            flex: 1,
+                                            minWidth: 0,
+                                            background: theme.palette.background.default,
+                                            border: '3px solid',
+                                            borderColor: currentTheme === 'highcontrast' 
+                                                ? theme.palette.primary.a30 
+                                                : '#000',
+                                            p: '0.8rem 1rem',
+                                            fontFamily: '"Inter", sans-serif',
+                                            fontSize: '1rem',
+                                            color: theme.palette.text.primary,
+                                            boxShadow: `4px 4px 0 ${currentTheme === 'highcontrast' 
+                                                ? theme.palette.primary.a10 
+                                                : '#000'}`,
+                                            transition: 'all 0.1s',
+                                            '&:focus': {
+                                                outline: 'none',
+                                                borderColor: theme.palette.primary.main,
+                                                boxShadow: `6px 6px 0 ${theme.palette.primary.main}`,
+                                                transform: 'translate(-2px, -2px)'
+                                            }
+                                        }}
+                                    />
+                                </Box>
                             </Box>
 
                             {/* Email field */}
@@ -165,38 +219,41 @@ export function ContactFormsSectionContactPageComponent() {
                                         color: theme.palette.text.primary
                                     }}
                                 >
-                                    email
+                                    email <Box component="span" sx={{ color: theme.palette.error.main }}>*</Box>
                                 </Box>
-                                <Box
-                                    component="input"
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    placeholder="you@example.com"
-                                    required
-                                    sx={{
-                                        width: '100%',
-                                        background: theme.palette.background.default,
-                                        border: '3px solid',
-                                        borderColor: currentTheme === 'highcontrast' 
-                                            ? theme.palette.primary.a30 
-                                            : '#000',
-                                        p: '0.8rem 1rem',
-                                        fontFamily: '"Inter", sans-serif',
-                                        fontSize: '1rem',
-                                        color: theme.palette.text.primary,
-                                        boxShadow: `4px 4px 0 ${currentTheme === 'highcontrast' 
-                                            ? theme.palette.primary.a10 
-                                            : '#000'}`,
-                                        transition: 'all 0.1s',
-                                        '&:focus': {
-                                            outline: 'none',
-                                            borderColor: theme.palette.primary.main,
-                                            boxShadow: `6px 6px 0 ${theme.palette.primary.main}`,
-                                            transform: 'translate(-2px, -2px)'
-                                        }
-                                    }}
-                                />
+                                <Box sx={{ display: 'flex', width: '100%' }}>
+                                    <Box
+                                        component="input"
+                                        type="email"
+                                        id="email"
+                                        name="email"
+                                        placeholder="you@example.com"
+                                        required
+                                        sx={{
+                                            flex: 1,
+                                            minWidth: 0,
+                                            background: theme.palette.background.default,
+                                            border: '3px solid',
+                                            borderColor: currentTheme === 'highcontrast' 
+                                                ? theme.palette.primary.a30 
+                                                : '#000',
+                                            p: '0.8rem 1rem',
+                                            fontFamily: '"Inter", sans-serif',
+                                            fontSize: '1rem',
+                                            color: theme.palette.text.primary,
+                                            boxShadow: `4px 4px 0 ${currentTheme === 'highcontrast' 
+                                                ? theme.palette.primary.a10 
+                                                : '#000'}`,
+                                            transition: 'all 0.1s',
+                                            '&:focus': {
+                                                outline: 'none',
+                                                borderColor: theme.palette.primary.main,
+                                                boxShadow: `6px 6px 0 ${theme.palette.primary.main}`,
+                                                transform: 'translate(-2px, -2px)'
+                                            }
+                                        }}
+                                    />
+                                </Box>
                             </Box>
 
                             {/* Subject field */}
@@ -217,35 +274,38 @@ export function ContactFormsSectionContactPageComponent() {
                                 >
                                     subject
                                 </Box>
-                                <Box
-                                    component="input"
-                                    type="text"
-                                    id="subject"
-                                    name="subject"
-                                    placeholder="what's this about?"
-                                    sx={{
-                                        width: '100%',
-                                        background: theme.palette.background.default,
-                                        border: '3px solid',
-                                        borderColor: currentTheme === 'highcontrast' 
-                                            ? theme.palette.primary.a30 
-                                            : '#000',
-                                        p: '0.8rem 1rem',
-                                        fontFamily: '"Inter", sans-serif',
-                                        fontSize: '1rem',
-                                        color: theme.palette.text.primary,
-                                        boxShadow: `4px 4px 0 ${currentTheme === 'highcontrast' 
-                                            ? theme.palette.primary.a10 
-                                            : '#000'}`,
-                                        transition: 'all 0.1s',
-                                        '&:focus': {
-                                            outline: 'none',
-                                            borderColor: theme.palette.primary.main,
-                                            boxShadow: `6px 6px 0 ${theme.palette.primary.main}`,
-                                            transform: 'translate(-2px, -2px)'
-                                        }
-                                    }}
-                                />
+                                <Box sx={{ display: 'flex', width: '100%' }}>
+                                    <Box
+                                        component="input"
+                                        type="text"
+                                        id="subject"
+                                        name="subject"
+                                        placeholder="what's this about?"
+                                        sx={{
+                                            flex: 1,
+                                            minWidth: 0,
+                                            background: theme.palette.background.default,
+                                            border: '3px solid',
+                                            borderColor: currentTheme === 'highcontrast' 
+                                                ? theme.palette.primary.a30 
+                                                : '#000',
+                                            p: '0.8rem 1rem',
+                                            fontFamily: '"Inter", sans-serif',
+                                            fontSize: '1rem',
+                                            color: theme.palette.text.primary,
+                                            boxShadow: `4px 4px 0 ${currentTheme === 'highcontrast' 
+                                                ? theme.palette.primary.a10 
+                                                : '#000'}`,
+                                            transition: 'all 0.1s',
+                                            '&:focus': {
+                                                outline: 'none',
+                                                borderColor: theme.palette.primary.main,
+                                                boxShadow: `6px 6px 0 ${theme.palette.primary.main}`,
+                                                transform: 'translate(-2px, -2px)'
+                                            }
+                                        }}
+                                    />
+                                </Box>
                             </Box>
 
                             {/* Message field */}
@@ -264,49 +324,56 @@ export function ContactFormsSectionContactPageComponent() {
                                         color: theme.palette.text.primary
                                     }}
                                 >
-                                    message
+                                    message <Box component="span" sx={{ color: theme.palette.error.main }}>*</Box>
                                 </Box>
-                                <Box
-                                    component="textarea"
-                                    id="message"
-                                    name="message"
-                                    placeholder="your message..."
-                                    required
-                                    sx={{
-                                        width: '100%',
-                                        minHeight: '120px',
-                                        background: theme.palette.background.default,
-                                        border: '3px solid',
-                                        borderColor: currentTheme === 'highcontrast' 
-                                            ? theme.palette.primary.a30 
-                                            : '#000',
-                                        p: '0.8rem 1rem',
-                                        fontFamily: '"Inter", sans-serif',
-                                        fontSize: '1rem',
-                                        color: theme.palette.text.primary,
-                                        boxShadow: `4px 4px 0 ${currentTheme === 'highcontrast' 
-                                            ? theme.palette.primary.a10 
-                                            : '#000'}`,
-                                        transition: 'all 0.1s',
-                                        resize: 'vertical',
-                                        '&:focus': {
-                                            outline: 'none',
-                                            borderColor: theme.palette.primary.main,
-                                            boxShadow: `6px 6px 0 ${theme.palette.primary.main}`,
-                                            transform: 'translate(-2px, -2px)'
-                                        }
-                                    }}
-                                />
+                                <Box sx={{ display: 'flex', width: '100%' }}>
+                                    <Box
+                                        component="textarea"
+                                        id="message"
+                                        name="message"
+                                        placeholder="your message..."
+                                        required
+                                        rows={4}
+                                        sx={{
+                                            flex: 1,
+                                            minWidth: 0,
+                                            minHeight: '120px',
+                                            background: theme.palette.background.default,
+                                            border: '3px solid',
+                                            borderColor: currentTheme === 'highcontrast' 
+                                                ? theme.palette.primary.a30 
+                                                : '#000',
+                                            p: '0.8rem 1rem',
+                                            fontFamily: '"Inter", sans-serif',
+                                            fontSize: '1rem',
+                                            color: theme.palette.text.primary,
+                                            boxShadow: `4px 4px 0 ${currentTheme === 'highcontrast' 
+                                                ? theme.palette.primary.a10 
+                                                : '#000'}`,
+                                            transition: 'all 0.1s',
+                                            resize: 'vertical',
+                                            '&:focus': {
+                                                outline: 'none',
+                                                borderColor: theme.palette.primary.main,
+                                                boxShadow: `6px 6px 0 ${theme.palette.primary.main}`,
+                                                transform: 'translate(-2px, -2px)'
+                                            }
+                                        }}
+                                    />
+                                </Box>
                             </Box>
 
-                            {/* Submit button */}
+                            {/* Submit button with loading state */}
                             <Box
                                 component="button"
                                 type="submit"
+                                disabled={isSubmitting}
                                 sx={{
                                     width: '100%',
                                     fontFamily: '"JetBrains Mono", "Space Mono", monospace',
-                                    background: theme.palette.background.paper,
+                                    background: isSubmitting 
+                                        ? theme.palette.action.disabledBackground
+                                        : theme.palette.background.paper,
                                     border: '3px solid',
                                     borderColor: currentTheme === 'highcontrast' 
                                         ? theme.palette.primary.a30 
@@ -314,14 +381,17 @@ export function ContactFormsSectionContactPageComponent() {
                                     p: '0.8rem 2rem',
                                     fontSize: '1rem',
                                     fontWeight: 600,
-                                    color: theme.palette.text.primary,
+                                    color: isSubmitting
+                                        ? theme.palette.text.disabled
+                                        : theme.palette.text.primary,
                                     boxShadow: `4px 4px 0 ${currentTheme === 'highcontrast' 
                                         ? theme.palette.primary.a10 
                                         : '#000'}`,
-                                    cursor: 'pointer',
+                                    cursor: isSubmitting ? 'not-allowed' : 'pointer',
                                     transition: 'all 0.1s',
                                     textAlign: 'center',
-                                    '&:hover': {
+                                    opacity: isSubmitting ? 0.7 : 1,
+                                    '&:hover': isSubmitting ? {} : {
                                         background: theme.palette.primary.main,
                                         color: theme.palette.background.default,
                                         transform: 'translate(-2px, -2px)',
@@ -331,8 +401,25 @@ export function ContactFormsSectionContactPageComponent() {
                                     }
                                 }}
                             >
-                                send message →
+                                {isSubmitting ? 'sending...' : 'send message →'}
                             </Box>
+
+                            {/* Status message */}
+                            {submitStatus.type && (
+                                <Box
+                                    sx={{
+                                        fontFamily: '"JetBrains Mono", "Space Mono", monospace',
+                                        fontSize: '0.8rem',
+                                        mt: 2,
+                                        textAlign: 'center',
+                                        color: submitStatus.type === 'success' 
+                                            ? theme.palette.success.main 
+                                            : theme.palette.error.main
+                                    }}
+                                >
+                                    {submitStatus.message}
+                                </Box>
+                            )}
                         </Box>
                     </Box>
                 </Grid>
@@ -369,6 +456,7 @@ export function ContactFormsSectionContactPageComponent() {
                                 fontWeight: 600,
                                 mb: 3,
                                 borderLeft: '3px solid',
+                                color: theme.palette.text.primary,
                                 borderColor: currentTheme === 'highcontrast' 
                                     ? theme.palette.primary.a30 
                                     : theme.palette.primary.main,
@@ -542,7 +630,7 @@ export function ContactFormsSectionContactPageComponent() {
                                                 }
                                             }}
                                         >
-                                            /bala
+                                            git/bala-murali-k
                                         </Box>
                                     </Box>
                                 </Box>

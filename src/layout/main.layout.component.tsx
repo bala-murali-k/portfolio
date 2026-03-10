@@ -1,6 +1,6 @@
 // Required imports
 import { useContext } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { Box, Tooltip, Stack, IconButton, Icon, useTheme } from '@mui/material'
 import { Outlet } from 'react-router-dom'
 import { ThemeContext } from './../context/theme/theme.context.component.tsx'
@@ -16,6 +16,7 @@ export default function MainLayout ({  }) {
 	
 	const { currentTheme, setCurrentTheme } = useContext(ThemeContext)
 	const theme = useTheme()
+	const location = useLocation() // Get current location
 	
 	// Helper function to get theme-specific colors
 	const getActiveBgColor = (themeName) => {
@@ -30,6 +31,14 @@ export default function MainLayout ({  }) {
 			return '#000'
 		}
 		return theme.palette.text.disabled
+	}
+	
+	// Helper function to check if a path is active
+	const isActivePath = (path) => {
+		if (path === '/') {
+			return location.pathname === '/'
+		}
+		return location.pathname.startsWith(path)
 	}
 	
 	return (
@@ -76,7 +85,7 @@ export default function MainLayout ({  }) {
 								fontSize: '1.8rem',
 								textDecoration: 'none',
 								color: theme.palette.mode === 'dark' ? '#eef4ff' : '#000',
-								background: theme.palette.primary.a30,
+								background: isActivePath('/') ? theme.palette.primary.a30 : theme.palette.primary.a30,
 								padding: '0.3rem 1.2rem',
 								border: '3px solid',
 								borderColor: theme.palette.mode === 'highcontrast' ? '#ffff00' : '#000',
@@ -105,28 +114,42 @@ export default function MainLayout ({  }) {
 							fontFamily: '"JetBrains Mono", monospace',
 							fontWeight: 500
 						}}>
-							{['/work', '/lab', '/resume', '/contact'].map((path) => (
-							  <Link
-								key={path}
-								to={path}
-								style={{
-								  textDecoration: 'none',
-								  color: theme.palette.text.secondary,
-								  fontSize: '1rem',
-								  borderBottom: '2px solid transparent',
-								  paddingBottom: '5px',
-								  transition: 'border-color 0.2s'
-								}}
-								onMouseEnter={(e) => {
-								  e.currentTarget.style.borderBottom = `2px solid ${theme.palette.primary.main}`;
-								}}
-								onMouseLeave={(e) => {
-								  e.currentTarget.style.borderBottom = '2px solid transparent';
-								}}
-							  >
-								{path.replace('/', '')}
-							  </Link>
-							))}
+							{['/work', '/lab', '/resume', '/contact'].map((path) => {
+								const isActive = isActivePath(path)
+								const displayName = path.replace('/', '')
+								
+								return (
+									<Link
+										key={path}
+										to={path}
+										style={{
+											textDecoration: 'none',
+											color: isActive 
+												? theme.palette.primary.main 
+												: theme.palette.text.secondary,
+											fontSize: '1rem',
+											borderBottom: isActive 
+												? `2px solid ${theme.palette.primary.main}` 
+												: '2px solid transparent',
+											paddingBottom: '5px',
+											transition: 'border-color 0.2s, color 0.2s',
+											fontWeight: isActive ? 600 : 500
+										}}
+										onMouseEnter={(e) => {
+											if (!isActive) {
+												e.currentTarget.style.borderBottom = `2px solid ${theme.palette.primary.main}`;
+											}
+										}}
+										onMouseLeave={(e) => {
+											if (!isActive) {
+												e.currentTarget.style.borderBottom = '2px solid transparent';
+											}
+										}}
+									>
+										{displayName}
+									</Link>
+								)
+							})}
 						</Box>
 						
 						{/* Theme Toggle Component with Google Material Icons */}

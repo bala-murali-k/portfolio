@@ -3,7 +3,7 @@ import { Box } from '@mui/material'
 // Components imports
 import { HeroSectionContactPageComponent } from './sections/hero.section.contact.component.tsx'
 import { ContactFormsSectionContactPageComponent } from './sections/contactform.section.component.tsx'
-// import { PhilosophySectionWorkPageComponent } from './sections/philosophy.section.work.component.tsx'
+import { QuickLinksSectionContactPageComponent } from './sections/quicklinks.section.contact.component.tsx'
 // Required objects
 
 export function CoreContactPageComponent ({  }) {
@@ -12,7 +12,7 @@ export function CoreContactPageComponent ({  }) {
 		<Box>
 			<HeroSectionContactPageComponent />
 			<ContactFormsSectionContactPageComponent />
-			{/* <PhilosophySectionWorkPageComponent /> */}
+			<QuickLinksSectionContactPageComponent />
 		</Box>
 	)
 }
