@@ -1,10 +1,11 @@
 // Required imports
 import { Box, useTheme, Grid } from '@mui/material'
 import { useContext } from 'react'
-import { ThemeContext } from '../../../context/theme/theme.context.component.tsx'
+import { ThemeContext, type ThemeContextType } from '../../../context/theme/theme.context.component.tsx'
 
 export function QuickLinksSectionContactPageComponent() {
-    const { currentTheme } = useContext(ThemeContext)
+	const themeContext = useContext(ThemeContext)
+    const { currentTheme } = themeContext as ThemeContextType
     const theme = useTheme()
     
     return (
@@ -46,7 +47,7 @@ export function QuickLinksSectionContactPageComponent() {
                 }}
             >
                 {/* Open Source */}
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Box
                         className="quick-item"
                         sx={{
@@ -86,7 +87,7 @@ export function QuickLinksSectionContactPageComponent() {
                 </Grid>
 
                 {/* Collaboration */}
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Box
                         className="quick-item"
                         sx={{
@@ -126,7 +127,7 @@ export function QuickLinksSectionContactPageComponent() {
                 </Grid>
 
                 {/* Freelance */}
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Box
                         className="quick-item"
                         sx={{
@@ -166,7 +167,7 @@ export function QuickLinksSectionContactPageComponent() {
                 </Grid>
 
                 {/* Technical Chat */}
-                <Grid item xs={12} sm={6} md={3}>
+                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Box
                         className="quick-item"
                         sx={{

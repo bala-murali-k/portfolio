@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Color Toolkit · dev tool</title>
+    <!-- Font & Icons (only for clean look, no framework) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz@14..32&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* styles.css embedded for single file delivery — but normally separate file */
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', system-ui, sans-serif; }
+        body { background: #f6f8fa; color: #1e293b; padding: 1.5rem; }
+        .container { max-width: 1400px; margin: 0 auto; }
+
+        /* header */
+        .app-header { margin-bottom: 2rem; display: flex; align-items: center; gap: 0.75rem; }
+        .app-header h1 { font-weight: 600; font-size: 2rem; letter-spacing: -0.02em; background: linear-gradient(145deg, #2563eb, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+        /* tabs */
+        .tabs { display: flex; flex-wrap: wrap; gap: 0.5rem 0.3rem; background: white; padding: 0.75rem 1rem; border-radius: 2rem; box-shadow: 0 4px 12px rgba(0,0,0,0.02); margin-bottom: 2rem; border: 1px solid #e9eef2; }
+        .tab-btn { background: transparent; border: none; padding: 0.5rem 1rem; font-size: 0.85rem; font-weight: 500; border-radius: 2rem; color: #4b5565; cursor: pointer; transition: 0.2s; white-space: nowrap; }
+        .tab-btn:hover { background: #f1f5f9; color: #0f172a; }
+        .tab-btn.active { background: #1e293b; color: white; box-shadow: 0 4px 8px rgba(0,20,40,0.1); }
+
+        /* main content card */
+        .section-card { background: white; border-radius: 2rem; padding: 2rem; box-shadow: 0 12px 30px rgba(0,0,0,0.04); border: 1px solid #edf2f7; margin-bottom: 2rem; }
+
+        /* utility grids / cards */
+        .color-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+        .color-block { border-radius: 1.2rem; padding: 1rem 0.75rem; background: #fafcfc; box-shadow: 0 2px 8px rgba(0,0,0,0.02); transition: 0.15s; border: 1px solid #edf2f7; text-align: center; }
+        .color-swatch { width: 100%; height: 90px; border-radius: 1rem; margin-bottom: 0.75rem; border: 2px solid white; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .copy-btn { background: #f1f5f9; border: none; border-radius: 2rem; padding: 0.25rem 0.8rem; font-size: 0.7rem; font-weight: 500; color: #334155; cursor: pointer; transition: 0.2s; margin-top: 0.4rem; border: 1px solid #e2e8f0; }
+        .copy-btn i { margin-right: 0.25rem; font-size: 0.7rem; }
+        .copy-btn:hover { background: #e2e8f0; }
+
+        .flex-row { display: flex; flex-wrap: wrap; gap: 1.5rem; align-items: center; }
+        .preview-box { width: 120px; height: 120px; border-radius: 1.5rem; border: 3px solid white; box-shadow: 0 10px 20px -5px rgba(0,0,0,0.1); }
+
+        /* form elements */
+        input, select { background: #f8fafc; border: 1px solid #dee4eb; border-radius: 2rem; padding: 0.6rem 1.2rem; font-size: 0.9rem; outline: none; transition: 0.15s; }
+        input:focus, select:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        button.primary { background: #1e293b; color: white; border: none; padding: 0.6rem 1.4rem; border-radius: 2rem; font-weight: 500; cursor: pointer; }
+
+        /* live saved section */
+        .saved-palettes { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; }
+        .saved-item { background: #f9f9fc; padding: 0.8rem; border-radius: 1rem; border: 1px solid #e9eef2; }
+        .mini-swatches { display: flex; gap: 0.2rem; margin: 0.5rem 0; }
+        .mini-swatch { width: 30px; height: 30px; border-radius: 0.5rem; }
+
+        /* responsive */
+        @media (max-width: 600px) { .tabs { flex-wrap: nowrap; overflow-x: auto; } .section-card { padding: 1.5rem; } }
+    </style>
+</head>
+<body>
+<div class="container">
+    <div class="app-header">
+        <i class="fas fa-palette" style="font-size: 2rem; color: #2563eb;"></i>
+        <h1>Color Toolkit</h1>
+    </div>
+
+    <!-- navigation tabs -->
+    <div class="tabs" id="tabContainer">
+        <button class="tab-btn active" data-tab="picker">🎨 Picker</button>
+        <button class="tab-btn" data-tab="palette">🗂️ Palette</button>
+        <button class="tab-btn" data-tab="gradient">🌈 Gradient</button>
+        <button class="tab-btn" data-tab="converter">🔄 Converter</button>
+        <button class="tab-btn" data-tab="search">🔎 Search</button>
+        <button class="tab-btn" data-tab="tailwind">⚡ Tailwind</button>
+        <button class="tab-btn" data-tab="contrast">👁️ Contrast</button>
+        <button class="tab-btn" data-tab="imageExtract">📸 Image</button>
+        <button class="tab-btn" data-tab="saved">💾 Saved</button>
+        <button class="tab-btn" data-tab="devCopy">⌨️ Dev copy</button>
+        <button class="tab-btn" data-tab="randomTheme">🎲 Random theme</button>
+    </div>
+
+    <!-- main dynamic content area -->
+    <div id="mainContent" class="section-card">
+        <!-- everything is injected via js -->
+    </div>
+</div>
+
+<script>
+    (function() {
+        // ---------- MODULAR JAVASCRIPT ----------
+        // Utility: copy to clipboard
+        function copyToClipboard(text) { navigator.clipboard?.writeText(text).then(() => { alert('Copied: ' + text); }); }
+
+        // Color conversion helpers
+        function hexToRgb(hex) {
+            let r = 0, g = 0, b = 0;
+            hex = hex.replace('#', '');
+            if (hex.length === 3) hex = hex.split('').map(c => c+c).join('');
+            if (hex.length === 6) {
+                r = parseInt(hex.substring(0,2), 16);
+                g = parseInt(hex.substring(2,4), 16);
+                b = parseInt(hex.substring(4,6), 16);
+            }
+            return { r, g, b };
+        }
+        function rgbToHsl(r, g, b) { r/=255; g/=255; b/=255; let max=Math.max(r,g,b), min=Math.min(r,g,b); let h,s,l=(max+min)/2; if(max===min) h=s=0; else { let d = max-min; s = l>0.5 ? d/(2-max-min) : d/(max+min); switch(max){ case r: h=(g-b)/d+(g<b?6:0); break; case g: h=(b-r)/d+2; break; case b: h=(r-g)/d+4; break; } h/=6; } return { h: Math.round(h*360), s: Math.round(s*100), l: Math.round(l*100) }; }
+        function hslToRgb(h,s,l){ s/=100; l/=100; let r,g,b; if(s===0) r=g=b=l; else { let hue2rgb = (p,q,t) => { if(t<0) t+=1; if(t>1) t-=1; if(t<1/6) return p+(q-p)*6*t; if(t<1/2) return q; if(t<2/3) return p+(q-p)*(2/3-t)*6; return p; }; let q = l < 0.5 ? l*(1+s) : l+s-l*s; let p = 2*l - q; r = hue2rgb(p,q,h/360+1/3); g = hue2rgb(p,q,h/360); b = hue2rgb(p,q,h/360-1/3); } return { r:Math.round(r*255), g:Math.round(g*255), b:Math.round(b*255) }; }
+        function rgbToHex({r,g,b}) { return '#' + ((1<<24)+(r<<16)+(g<<8)+b).toString(16).slice(1); }
+
+        // ---------- STATE & localStorage ----------
+        let savedPalettes = JSON.parse(localStorage.getItem('colorToolkit_palettes')) || [];
+
+        function savePaletteToLS(colorsArray) {
+            savedPalettes.push({ colors: colorsArray, id: Date.now() });
+            localStorage.setItem('colorToolkit_palettes', JSON.stringify(savedPalettes));
+            renderCurrentTab(); // refresh if saved tab active
+        }
+        function deletePalette(id) {
+            savedPalettes = savedPalettes.filter(p => p.id !== id);
+            localStorage.setItem('colorToolkit_palettes', JSON.stringify(savedPalettes));
+            renderCurrentTab();
+        }
+
+        // ---------- RENDERING (tab system) ----------
+        const contentEl = document.getElementById('mainContent');
+        let currentTab = 'picker';
+
+        function renderCurrentTab() {
+            if (currentTab === 'picker') renderPicker();
+            else if (currentTab === 'palette') renderPalette();
+            else if (currentTab === 'gradient') renderGradient();
+            else if (currentTab === 'converter') renderConverter();
+            else if (currentTab === 'search') renderSearch();
+            else if (currentTab === 'tailwind') renderTailwind();
+            else if (currentTab === 'contrast') renderContrast();
+            else if (currentTab === 'imageExtract') renderImageExtract();
+            else if (currentTab === 'saved') renderSaved();
+            else if (currentTab === 'devCopy') renderDevCopy();
+            else if (currentTab === 'randomTheme') renderRandomTheme();
+        }
+
+        // ----- 1. Color Picker -----
+        function renderPicker() {
+            let html = `<h2 style="margin-bottom:1.5rem;">🎨 Color Picker</h2><div class="flex-row">`;
+            let baseColor = '#3B82F6';
+            html += `<input type="color" id="pickerInput" value="${baseColor}" style="width:100px;height:100px;">`;
+            html += `<div><div id="previewBox" style="width:120px;height:120px;border-radius:1.5rem;background:${baseColor};"></div></div>`;
+            html += `<div id="pickerValues"><div>HEX: <span id="hexVal">${baseColor}</span> <button class="copy-btn" data-copy="${baseColor}"><i class="far fa-copy"></i> copy</button></div>`;
+            let rgb = hexToRgb(baseColor); let hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+            html += `<div>RGB: rgb(${rgb.r},${rgb.g},${rgb.b}) <button class="copy-btn" data-copy="rgb(${rgb.r},${rgb.g},${rgb.b})"><i class="far fa-copy"></i></button></div>`;
+            html += `<div>HSL: hsl(${hsl.h},${hsl.s}%,${hsl.l}%) <button class="copy-btn" data-copy="hsl(${hsl.h},${hsl.s}%,${hsl.l}%)"><i class="far fa-copy"></i></button></div>`;
+            html += `</div></div>`;
+            html += `<div style="margin-top:1.5rem"><label>Manual HEX: </label><input id="manualHex" value="${baseColor}" maxlength="7"> <button id="applyHex" class="primary">apply</button></div>`;
+            contentEl.innerHTML = html;
+            document.getElementById('pickerInput').addEventListener('input', (e) => updatePicker(e.target.value));
+            document.getElementById('applyHex').addEventListener('click', () => { let v = document.getElementById('manualHex').value; if(v.match(/^#?[0-9A-F]{3,6}$/i)) { let hex = v[0]!=='#' ? '#'+v : v; updatePicker(hex); document.getElementById('pickerInput').value=hex; }});
+            function updatePicker(hex) {
+                let rgb = hexToRgb(hex); let hsl = rgbToHsl(rgb.r, rgb.g, rgb.b);
+                document.getElementById('previewBox').style.background = hex;
+                document.getElementById('hexVal').innerText = hex;
+                document.getElementById('hexVal').parentElement.querySelector('.copy-btn').dataset.copy = hex;
+                let rgbStr = `rgb(${rgb.r},${rgb.g},${rgb.b})`; let hslStr = `hsl(${hsl.h},${hsl.s}%,${hsl.l}%)`;
+                document.querySelector('#pickerValues div:nth-child(2)').innerHTML = `RGB: ${rgbStr} <button class="copy-btn" data-copy="${rgbStr}"><i class="far fa-copy"></i></button>`;
+                document.querySelector('#pickerValues div:nth-child(3)').innerHTML = `HSL: ${hslStr} <button class="copy-btn" data-copy="${hslStr}"><i class="far fa-copy"></i></button>`;
+                attachCopy();
+            }
+            attachCopy();
+        }
+
+        // copy helper
+        function attachCopy() {
+            document.querySelectorAll('.copy-btn').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); copyToClipboard(btn.dataset.copy || btn.innerText.split('copy')[0].trim()); }));
+        }
+
+        // ----- 2. Palette generator (random & from base) -----
+        function renderPalette() {
+            let base = '#2563eb';
+            let html = `<h2>🎨 Palette Generator</h2><div style="display:flex;gap:1rem;margin:1.5rem 0"><input type="color" id="baseColorPal" value="${base}"><button id="genFromBase" class="primary">from base</button><button id="genRandomPal" class="primary">random palette</button><button id="saveCurrentPal" class="primary"><i class="far fa-save"></i> save</button></div>`;
+            html += `<div id="paletteGrid" class="color-grid"></div>`;
+            contentEl.innerHTML = html;
+            let colors = generatePaletteFromBase(base, 6);
+            renderPaletteColors(colors);
+            document.getElementById('genFromBase').addEventListener('click', ()=>{ let c=document.getElementById('baseColorPal').value; renderPaletteColors(generatePaletteFromBase(c,6)); });
+            document.getElementById('genRandomPal').addEventListener('click', ()=>{ renderPaletteColors(generateRandomPalette(6)); });
+            document.getElementById('saveCurrentPal').addEventListener('click', ()=>{ let cols = Array.from(document.querySelectorAll('#paletteGrid .color-swatch')).map(el => el.dataset.hex); savePaletteToLS(cols); });
+            function renderPaletteColors(hexArr) {
+                let grid = document.getElementById('paletteGrid');
+                grid.innerHTML = hexArr.map(h => `<div class="color-block"><div class="color-swatch" style="background:${h}" data-hex="${h}"></div><div>${h}</div><button class="copy-btn" data-copy="${h}"><i class="far fa-copy"></i> copy</button></div>`).join('');
+                attachCopy();
+            }
+            function generatePaletteFromBase(hex, count) { let out=[]; for(let i=0;i<count;i++){ let rgb=hexToRgb(hex); let factor=0.3+(i*0.1); out.push(rgbToHex({r: Math.min(255,Math.floor(rgb.r*factor)), g: Math.min(255,Math.floor(rgb.g*factor)), b: Math.min(255,Math.floor(rgb.b*factor))})); } return out; }
+            function generateRandomPalette(n){ let arr=[]; for(let i=0;i<n;i++) arr.push('#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0')); return arr; }
+        }
+
+        // gradient generator (simplified)
+        function renderGradient() {
+            let html = `<h2>🌈 Gradient Generator</h2><div><label>angle: <input id="gradAngle" type="number" value="45" step="5"></label> `;
+            html += `<select id="gradType"><option value="linear">linear</option><option value="radial">radial</option></select>`;
+            html += `<div><label>colors (comma sep hex): <input id="gradColors" value="#ff6a00, #ee0979"></label></div>`;
+            html += `<div style="height:120px; border-radius:1.5rem; margin:1.5rem 0; background: linear-gradient(45deg, #ff6a00, #ee0979);" id="gradPreview"></div>`;
+            html += `<div><code id="gradCss">background: linear-gradient(45deg, #ff6a00, #ee0979);</code> <button class="copy-btn" id="copyGradCss" data-copy="background: linear-gradient(45deg, #ff6a00, #ee0979);">copy css</button></div>`;
+            html += `<button id="updateGrad" class="primary" style="margin-top:1rem">update</button>`;
+            contentEl.innerHTML = html;
+            document.getElementById('updateGrad').addEventListener('click', ()=>{
+                let angle = document.getElementById('gradAngle').value;
+                let type = document.getElementById('gradType').value;
+                let cols = document.getElementById('gradColors').value.split(',').map(s=>s.trim());
+                let css = (type==='linear')? `background: linear-gradient(${angle}deg, ${cols.join(', ')});` : `background: radial-gradient(circle, ${cols.join(', ')});`;
+                document.getElementById('gradPreview').style.background = (type==='linear')? `linear-gradient(${angle}deg, ${cols.join(', ')})` : `radial-gradient(circle, ${cols.join(', ')})`;
+                document.getElementById('gradCss').innerText = css;
+                document.getElementById('copyGradCss').dataset.copy = css;
+            });
+            attachCopy();
+        }
+
+        // converter (auto)
+        function renderConverter() {
+            contentEl.innerHTML = `<h2>🔄 Color converter</h2><div><label>HEX/RGB/HSL: <input id="convInput" placeholder="#3B82F6 or rgb(59,130,246)"></label></div><div id="convResults" style="margin-top:2rem"></div>`;
+            let inp = document.getElementById('convInput');
+            inp.addEventListener('input', (e)=>{ convertAndDisplay(e.target.value); });
+            function convertAndDisplay(str) { let hex='', rgb={r:0,g:0,b:0}, hsl={h:0,s:0,l:0}; try { if(str.includes('rgb')) { let m = str.match(/\d+/g); if(m) rgb = {r:+m[0],g:+m[1],b:+m[2]}; hex = rgbToHex(rgb); hsl = rgbToHsl(rgb.r, rgb.g, rgb.b); } else if(str.includes('hsl')) { let p = str.match(/\d+/g); if(p) hsl = {h:+p[0], s:+p[1], l:+p[2]}; rgb = hslToRgb(hsl.h, hsl.s, hsl.l); hex = rgbToHex(rgb); } else { hex = str[0]!=='#'? '#'+str : str; rgb = hexToRgb(hex); hsl = rgbToHsl(rgb.r, rgb.g, rgb.b); } } catch { hex = '#000000'; } 
+            let cmyk = `cmyk(${Math.round((1-rgb.r/255)*100)}%,${Math.round((1-rgb.g/255)*100)}%,${Math.round((1-rgb.b/255)*100)}%,0%)`; // naive
+            document.getElementById('convResults').innerHTML = `
+                <div>HEX: ${hex} <button class="copy-btn" data-copy="${hex}">copy</button></div>
+                <div>RGB: rgb(${rgb.r},${rgb.g},${rgb.b}) <button class="copy-btn" data-copy="rgb(${rgb.r},${rgb.g},${rgb.b})">copy</button></div>
+                <div>HSL: hsl(${hsl.h},${hsl.s}%,${hsl.l}%) <button class="copy-btn" data-copy="hsl(${hsl.h},${hsl.s}%,${hsl.l}%)">copy</button></div>
+                <div>HSV: hsv (approx) <button class="copy-btn" data-copy="hsv(${hsl.h},${hsl.s},${hsl.l})">copy</button></div>
+                <div>${cmyk} <button class="copy-btn" data-copy="${cmyk}">copy</button></div>
+            `; attachCopy(); }
+            inp.dispatchEvent(new Event('input'));
+        }
+
+        // search by name (preset list)
+        function renderSearch() {
+            let named = [['aliceblue','#f0f8ff'],['coral','#ff7f50'],['gold','#ffd700'],['indigo','#4b0082'],['teal','#008080'],['tomato','#ff6347'],['mediumseagreen','#3cb371']];
+            let html = `<h2>🔎 Named colors</h2><input placeholder="search..." id="searchColors"> <div class="color-grid" id="searchGrid">`+named.map(n=>`<div class="color-block"><div class="color-swatch" style="background:${n[1]}" data-hex="${n[1]}"></div><div>${n[0]}</div><div>${n[1]}</div><button class="copy-btn" data-copy="${n[1]}">copy</button></div>`).join('')+`</div>`;
+            contentEl.innerHTML = html;
+            document.getElementById('searchColors').addEventListener('input', (e)=>{
+                let val = e.target.value.toLowerCase();
+                document.querySelectorAll('#searchGrid .color-block').forEach(block => { let name = block.innerText.toLowerCase(); block.style.display = name.includes(val) ? 'block' : 'none'; });
+            });
+            attachCopy();
+        }
+
+        // tailwind shades generator (from base)
+        function renderTailwind() {
+            contentEl.innerHTML = `<h2>⚡ Tailwind shades</h2><div><input type="color" id="twBase" value="#3B82F6"> <button id="genTw" class="primary">generate 50..900</button></div><div id="twGrid" class="color-grid"></div>`;
+            document.getElementById('genTw').addEventListener('click', ()=>{
+                let base = document.getElementById('twBase').value;
+                let rgb = hexToRgb(base); let shades=[];
+                for(let i=0;i<10;i++) { let percent=0.2+i*0.15; shades.push(rgbToHex({r:Math.min(255,Math.floor(rgb.r*percent)), g:Math.min(255,Math.floor(rgb.g*percent)), b:Math.min(255,Math.floor(rgb.b*percent))})); }
+                let grid = document.getElementById('twGrid');
+                grid.innerHTML = shades.map((h,idx)=>`<div class="color-block"><div class="color-swatch" style="background:${h}"></div><div>${idx*100+50}</div><div>${h}</div><button class="copy-btn" data-copy="${h}">copy</button></div>`).join('');
+                attachCopy();
+            });
+        }
+
+        // contrast checker
+        function renderContrast() {
+            contentEl.innerHTML = `<h2>👁️ WCAG contrast</h2><div>text color <input type="color" id="textCol" value="#111827"> bg <input type="color" id="bgCol" value="#F3F4F6"></div><div id="contrastResult" style="margin:1.5rem; padding:2rem; border-radius:1rem; background:#F3F4F6; color:#111827;">Preview sample text</div><div id="ratioInfo"></div>`;
+            function updateContrast() { let t=document.getElementById('textCol').value; let b=document.getElementById('bgCol').value; let preview=document.getElementById('contrastResult'); preview.style.color=t; preview.style.background=b; let ratio=1; preview.innerText=`Contrast ratio: ${ratio} (dummy)`; } // simplified but real calc omitted
+            document.getElementById('textCol').addEventListener('input', updateContrast);
+            document.getElementById('bgCol').addEventListener('input', updateContrast);
+        }
+
+        // image extractor (dummy)
+        function renderImageExtract() {
+            contentEl.innerHTML = `<h2>📸 Upload image (dominant colors demo)</h2><input type="file" id="imageUpload" accept="image/*"><div id="extractedGrid" class="color-grid"></div>`;
+            document.getElementById('imageUpload').addEventListener('change', (e)=>{
+                let mock = ['#2c3e50','#e67e22','#ecf0f1','#3498db','#9b59b6']; // placeholder
+                let g = document.getElementById('extractedGrid');
+                g.innerHTML = mock.map(c=>`<div class="color-block"><div class="color-swatch" style="background:${c}"></div>${c}<button class="copy-btn" data-copy="${c}">copy</button></div>`).join('');
+                attachCopy();
+            });
+        }
+
+        // saved collections
+        function renderSaved() {
+            let html = `<h2>💾 Saved palettes</h2><div class="saved-palettes">`;
+            if(savedPalettes.length===0) html += `<p>no saved palettes</p>`;
+            savedPalettes.forEach(p=>{ html+=`<div class="saved-item"><div class="mini-swatches">`+ p.colors.map(c=>`<div class="mini-swatch" style="background:${c}"></div>`).join('')+`</div><button class="copy-btn" data-id="${p.id}">delete</button></div>`; });
+            html += `</div>`;
+            contentEl.innerHTML = html;
+            document.querySelectorAll('.saved-item .copy-btn').forEach(btn => btn.addEventListener('click', (e)=>{ let id = Number(btn.dataset.id); deletePalette(id); }));
+        }
+
+        // dev copy tools
+        function renderDevCopy() {
+            contentEl.innerHTML = `<h2>⌨️ Dev copy</h2><div><input placeholder="#3B82F6" id="devHex" value="#3B82F6"></div><div><button class="copy-btn" id="copyHex">copy HEX</button> <button class="copy-btn" id="copyRgb">copy RGB</button> <button class="copy-btn" id="copyCssVar">copy CSS variable</button> <button class="copy-btn" id="copyScss">copy SCSS</button></div>`;
+            document.getElementById('copyHex').addEventListener('click',()=>copyToClipboard(document.getElementById('devHex').value));
+            document.getElementById('copyRgb').addEventListener('click',()=>{ let r=hexToRgb(document.getElementById('devHex').value); copyToClipboard(`rgb(${r.r},${r.g},${r.b})`); });
+            document.getElementById('copyCssVar').addEventListener('click',()=>copyToClipboard(`--primary-color: ${document.getElementById('devHex').value};`));
+            document.getElementById('copyScss').addEventListener('click',()=>copyToClipboard(`$primary-color: ${document.getElementById('devHex').value};`));
+        }
+
+        // random theme generator
+        function renderRandomTheme() {
+            let base = '#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0');
+            let theme = { primary: base, secondary: '#10b981', accent: '#f59e0b', background: '#f9fafb', text: '#111827' };
+            let html = `<h2>🎲 Random UI theme</h2><div class="color-grid">`+Object.entries(theme).map(([k,v])=>`<div class="color-block"><div class="color-swatch" style="background:${v}"></div>${k}: ${v}<button class="copy-btn" data-copy="${v}">copy</button></div>`).join('')+`</div><button id="newThemeBtn" class="primary">generate new</button>`;
+            contentEl.innerHTML = html;
+            document.getElementById('newThemeBtn').addEventListener('click', renderRandomTheme);
+            attachCopy();
+        }
+
+        // ----- init tabs and default render-----
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                currentTab = btn.dataset.tab;
+                renderCurrentTab();
+            });
+        });
+        renderPicker(); // default
+    })();
+</script>
+</body>
+</html>

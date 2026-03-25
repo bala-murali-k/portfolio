@@ -1,26 +1,44 @@
 // Required imports
-import { createContext, useMemo, useState } from 'react'
-import { ThemeProvider, CssBaseline } from '@mui/material'
+import { createContext, useMemo, useState, type ReactNode } from 'react'
+import { ThemeProvider } from '@mui/material'
 
 // Theme object
 import { themeObject } from './../../themes/multiple.object.theme.ts'
 
-export const ThemeContext = createContext(null)
+// Define the shape of our theme context
+export interface ThemeContextType {
+  currentTheme: 'light' | 'dark' | 'highcontrast';
+  setCurrentTheme: React.Dispatch<React.SetStateAction<'light' | 'dark' | 'highcontrast'>>;
+}
 
-export default function ThemeContextComponent ({ children }) {
-	
-	const [currentTheme, setCurrentTheme] = useState('light')
-	
-	const theme = useMemo(() => {
-		return themeObject[currentTheme]
-	}, [currentTheme])
-	
-	return (
-		<ThemeContext.Provider value={{ currentTheme, setCurrentTheme }}>
-			<ThemeProvider theme={theme}>
-				{children}
-			</ThemeProvider>
-		</ThemeContext.Provider>
-	)
+// Define the theme object type
+interface ThemeObjectType {
+  light: any; // Replace 'any' with your actual theme type if you have it defined
+  dark: any;
+  highcontrast: any;
+}
 
+// Create context with proper typing and default value
+export const ThemeContext = createContext<ThemeContextType | null>(null)
+
+interface ThemeContextComponentProps {
+  children: ReactNode;
+}
+
+export default function ThemeContextComponent({ children }: ThemeContextComponentProps) {
+  
+  const [currentTheme, setCurrentTheme] = useState<'light' | 'dark' | 'highcontrast'>('light')
+  
+  const theme = useMemo(() => {
+    // Type assertion to let TypeScript know themeObject has the expected shape
+    return (themeObject as ThemeObjectType)[currentTheme]
+  }, [currentTheme])
+  
+  return (
+    <ThemeContext.Provider value={{ currentTheme, setCurrentTheme }}>
+      <ThemeProvider theme={theme}>
+        {children}
+      </ThemeProvider>
+    </ThemeContext.Provider>
+  )
 }

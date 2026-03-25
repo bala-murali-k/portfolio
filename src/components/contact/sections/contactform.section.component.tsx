@@ -1,11 +1,12 @@
 // Required imports
 import { Box, useTheme, Grid } from '@mui/material'
 import { useContext, useRef, useState } from 'react'
-import { ThemeContext } from './../../../context/theme/theme.context.component.tsx'
+import { ThemeContext, type ThemeContextType } from './../../../context/theme/theme.context.component.tsx'
 import emailjs from '@emailjs/browser'
 
 export function ContactFormsSectionContactPageComponent() {
-    const { currentTheme } = useContext(ThemeContext)
+	const themeContext = useContext(ThemeContext)
+    const { currentTheme } = themeContext as ThemeContextType
     const theme = useTheme()
     const formRef = useRef<HTMLFormElement>(null)
     const [isSubmitting, setIsSubmitting] = useState(false)
@@ -22,10 +23,17 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     setSubmitStatus({ type: null, message: '' })
 
     const form = event.currentTarget
-    const name = form.name.value.trim()
-    const email = form.email.value.trim()
-    const subject = form.subject.value.trim() || 'No subject provided'
-    const message = form.message.value.trim()
+    
+    // Cast the form elements to HTMLInputElement/HTMLTextAreaElement
+    const nameInput = form.elements.namedItem('name') as HTMLInputElement
+    const emailInput = form.elements.namedItem('email') as HTMLInputElement
+    const subjectInput = form.elements.namedItem('subject') as HTMLInputElement
+    const messageInput = form.elements.namedItem('message') as HTMLTextAreaElement
+    
+    const name = nameInput?.value.trim() || ''
+    const email = emailInput?.value.trim() || ''
+    const subject = subjectInput?.value.trim() || 'No subject provided'
+    const message = messageInput?.value.trim() || ''
 
     // Validation
     if (!name || !email || !message) {
@@ -101,7 +109,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 sx={{ mt: 2 }}
             >
                 {/* LEFT SIDE: CONTACT FORM CARD */}
-                <Grid item size={{ xs:12, md:6 }}>
+                <Grid size={{ xs:12, md:6 }}>
                     <Box
                         className="contact-card"
                         sx={{
@@ -425,7 +433,7 @@ const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
                 </Grid>
 
                 {/* RIGHT SIDE: CONTACT INFO CARDS */}
-                <Grid item  size={{ xs:12, md:6 }}>
+                <Grid size={{ xs:12, md:6 }}>
                     <Box
                         className="contact-card"
                         sx={{

@@ -1,47 +1,12 @@
 // Required imports
 import { Box, useTheme } from '@mui/material'
 import { useContext } from 'react'
-import { ThemeContext } from './../../../context/theme/theme.context.component.tsx'
+import { ThemeContext, type ThemeContextType } from './../../../context/theme/theme.context.component.tsx'
 
 export function HeroSectionWorkPageComponent() {
-	const { currentTheme } = useContext(ThemeContext)
+	const themeContext = useContext(ThemeContext)
+	const { currentTheme } = themeContext as ThemeContextType
 	const theme = useTheme()
-	
-	// Helper function to get accent secondary color
-	const getAccentSecondary = () => {
-		switch (currentTheme) {
-			case 'dark':
-				return theme.palette.primary.a20 // #f9c74f
-			case 'highcontrast':
-				return theme.palette.primary.a20 // #ff00ff
-			default:
-				return theme.palette.primary.a40 // #facc15 for light theme
-		}
-	}
-	
-	// Helper function for badge background
-	const getBadgeBackground = () => {
-		switch (currentTheme) {
-			case 'dark':
-				return theme.palette.primary.a30 // #8196c9
-			case 'highcontrast':
-				return theme.palette.primary.a30 // #ffff00
-			default:
-				return '#000' // black for light theme
-		}
-	}
-	
-	// Helper function for badge text color
-	const getBadgeTextColor = () => {
-		switch (currentTheme) {
-			case 'dark':
-				return theme.palette.text.primary // #eef4ff
-			case 'highcontrast':
-				return '#000' // black for high contrast
-			default:
-				return '#fff' // white for light theme
-		}
-	}
 	
 	return (
 		<Box 
