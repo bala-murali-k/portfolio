@@ -1,10 +1,11 @@
 // Required imports
 import { Box, useTheme } from '@mui/material'
 import { useContext } from 'react'
-import { ThemeContext } from './../../../context/theme/theme.context.component.tsx'
+import { ThemeContext, type ThemeContextType } from './../../../context/theme/theme.context.component.tsx'
 
 export function HeroSectionContactPageComponent() {
-    const { currentTheme } = useContext(ThemeContext)
+	const themeContext = useContext(ThemeContext)
+    const { currentTheme } = themeContext as ThemeContextType
     const theme = useTheme()
     
     return (
