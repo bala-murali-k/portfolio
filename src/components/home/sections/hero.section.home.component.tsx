@@ -806,7 +806,7 @@ export function HeroSectionHomePageComponent({}) {
           </Box>
           <Box
             component={Link}
-            to="/about"
+            to="/resume"
             sx={{
               fontFamily: '"JetBrains Mono", monospace',
               fontWeight: 600,
@@ -1085,7 +1085,7 @@ export function HeroSectionHomePageComponent({}) {
         <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
           <Box
             component="a"
-            href="mailto:bala@example.com"
+            href="mailto:k.balamurali0701@gmail.com"
             sx={{
               fontFamily: '"JetBrains Mono", monospace',
               fontWeight: 600,
@@ -1116,7 +1116,7 @@ export function HeroSectionHomePageComponent({}) {
           </Box>
           <Box
             component="a"
-            href="https://github.com"
+            href="https://github.com/bala-murali-k"
             target="_blank"
             rel="noopener noreferrer"
             sx={{

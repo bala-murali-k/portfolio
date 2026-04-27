@@ -1,5 +1,7 @@
 // Required imports
 import { Box, useTheme, Typography } from '@mui/material'
+import { Link as RouterLink } from 'react-router-dom'
+import { Link as MuiLink } from '@mui/material'
 import { useContext } from 'react'
 import { ThemeContext, type ThemeContextType } from './../../../context/theme/theme.context.component.tsx'
 
@@ -68,7 +70,7 @@ export function CTASectionResumePageComponent() {
                 
                 <Box
                     component="a"
-                    href="https://github.com"
+                    href="https://github.com/bala-murali-k"
                     target="_blank"
                     rel="noopener noreferrer"
                     sx={{
@@ -88,7 +90,7 @@ export function CTASectionResumePageComponent() {
                 
                 <Box
                     component="a"
-                    href="https://linkedin.com"
+                    href="https://www.linkedin.com/in/bala-murali-k0701/"
                     target="_blank"
                     rel="noopener noreferrer"
                     sx={{
@@ -106,9 +108,9 @@ export function CTASectionResumePageComponent() {
                     linkedin ↗
                 </Box>
                 
-                <Box
-                    component="a"
-                    href="contact.html"
+                <MuiLink
+                    component={RouterLink}
+                    to="/contact"
                     sx={{
                         color: theme.palette.text.primary,
                         textDecoration: 'underline',
@@ -121,8 +123,8 @@ export function CTASectionResumePageComponent() {
                         }
                     }}
                 >
-                    contact page →
-                </Box>
+                    mail me →
+                </MuiLink>
             </Box>
         </Box>
     )

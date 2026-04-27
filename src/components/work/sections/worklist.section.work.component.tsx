@@ -27,6 +27,7 @@ const PROJECTS: Project[] = [
 		tech: ['html', 'css', 'js'],
 		category: 'Tools',
 		links: {
+			github: 'https://github.com/bala-murali-k/chromalab',
 			demo: 'https://bala-murali-k.github.io/chromalab/'
 		}
 	},
@@ -37,6 +38,7 @@ const PROJECTS: Project[] = [
 		tech: ['html', 'css', 'js'],
 		category: 'Tools',
 		links: {
+			github: 'https://github.com/bala-murali-k/jsonlens',
 			demo: 'https://bala-murali-k.github.io/jsonlens/'
 		}
 	},
@@ -47,6 +49,7 @@ const PROJECTS: Project[] = [
 		tech: ['html', 'css', 'js'],
 		category: 'Tools',
 		links: {
+			github: 'https://github.com/bala-murali-k/regexlab',
 			demo: 'https://bala-murali-k.github.io/regexlab/'
 		}
 	},
@@ -57,6 +60,7 @@ const PROJECTS: Project[] = [
 		tech: ['html', 'css', 'js'],
 		category: 'Tools',
 		links: {
+			github: 'https://github.com/bala-murali-k/vectraview',
 			demo: 'https://bala-murali-k.github.io/vectraview/'
 		}
 	},
@@ -65,10 +69,10 @@ const PROJECTS: Project[] = [
 		title: 'Task Library',
 		description: 'async task queue with retry & schedule.',
 		tech: ['rust', 'wasm', 'js'],
-		category: 'Tools', // Changed from 'Backend' to 'Tools' since 'Backend' isn't in FilterCategory
+		category: 'Experiments',
 		links: {
-			github: '#',
-			demo: 'https://www.wikipedia.org'
+			github: 'https://github.com/bala-murali-k/taskLibrary',
+			// demo: 'https://www.wikipedia.org'
 		}
 	},
 	{
@@ -76,10 +80,10 @@ const PROJECTS: Project[] = [
 		title: 'WebSocket Terminal',
 		description: 'browser-based terminal over websockets.',
 		tech: ['go', 'websocket', 'react'],
-		category: 'Web Apps',
+		category: 'Experiments',
 		links: {
-			github: '#',
-			demo: 'https://www.bbc.com'
+			github: 'https://github.com/bala-murali-k/terminal-business',
+			// demo: ''
 		}
 	},
 	{

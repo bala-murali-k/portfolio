@@ -8,10 +8,6 @@ export function DownloadSectionResumePageComponent() {
     const { currentTheme } = themeContext as ThemeContextType
     const theme = useTheme()
     
-    const handleDownload = () => {
-        alert('attach your PDF link here')
-    }
-    
     return (
         <Box sx={{ textAlign: 'center', margin: '3rem 0' }}>
             <Typography
@@ -34,13 +30,14 @@ export function DownloadSectionResumePageComponent() {
                     marginBottom: '0.5rem'
                 }}
             >
-                grab the full ATS-optimised resume below.
+                grab the resume pdf below.
             </Typography>
             
             <Box
                 component="a"
-                href="#"
-                onClick={handleDownload}
+                href="assets/resume/Resume.pdf"
+                download
+                // onClick={handleDownload}
                 className="btn-large"
                 sx={{
                     fontFamily: '"Space Mono", "JetBrains Mono", monospace',

@@ -47,7 +47,7 @@ export function QuickLinksSectionContactPageComponent() {
                 }}
             >
                 {/* Open Source */}
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                {/* <Grid size={{ xs: 12, sm: 6, md: 3 }}>
                     <Box
                         className="quick-item"
                         sx={{
@@ -84,10 +84,10 @@ export function QuickLinksSectionContactPageComponent() {
                             contributions to rust, node, go
                         </Box>
                     </Box>
-                </Grid>
+                </Grid> */}
 
                 {/* Collaboration */}
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                     <Box
                         className="quick-item"
                         sx={{
@@ -127,7 +127,7 @@ export function QuickLinksSectionContactPageComponent() {
                 </Grid>
 
                 {/* Freelance */}
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                <Grid size={{ xs: 12, sm: 6, md: 4 }}>
                     <Box
                         className="quick-item"
                         sx={{
@@ -167,7 +167,7 @@ export function QuickLinksSectionContactPageComponent() {
                 </Grid>
 
                 {/* Technical Chat */}
-                <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+                <Grid size={{ xs: 12, sm: 12, md: 4 }}>
                     <Box
                         className="quick-item"
                         sx={{

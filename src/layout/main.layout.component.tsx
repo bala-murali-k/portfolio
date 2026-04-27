@@ -6,7 +6,7 @@ import { Outlet } from 'react-router-dom'
 import { ThemeContext } from './../context/theme/theme.context.component.tsx'
 // Icons imports
 import GitHubIcon from '@mui/icons-material/GitHub'
-import CodeIcon from '@mui/icons-material/Code' // For CodePen (MUI doesn't have direct CodePen icon)
+// import CodeIcon from '@mui/icons-material/Code' // For CodePen (MUI doesn't have direct CodePen icon)
 import LinkedInIcon from '@mui/icons-material/LinkedIn'
 import EmailIcon from '@mui/icons-material/Email'
 
@@ -265,7 +265,7 @@ export default function MainLayout({}: {}) {
           <Box sx={{ display: 'flex', gap: 2 }}>
             {[
               { icon: GitHubIcon, url: 'https://github.com/bala-murali-k', label: 'GitHub' },
-              { icon: CodeIcon, url: '#', label: 'CodePen' },
+              // { icon: CodeIcon, url: '#', label: 'CodePen' },
               { icon: LinkedInIcon, url: 'https://www.linkedin.com/in/bala-murali-k0701/', label: 'LinkedIn' },
               { icon: EmailIcon, url: '#', label: 'Email' }
             ].map((social) => (
