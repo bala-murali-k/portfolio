@@ -1,5 +1,5 @@
 // Required imports
-import { useContext } from 'react'
+import { useContext, useState } from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Box, Tooltip, Stack, IconButton, Icon, useTheme } from '@mui/material'
 import { Outlet } from 'react-router-dom'
@@ -28,7 +28,9 @@ const useSafeThemeContext = () => {
 export default function MainLayout({}: {}) {
   const { currentTheme, setCurrentTheme } = useSafeThemeContext();
   const theme = useTheme();
-  const location = useLocation(); // Get current location
+  const location = useLocation();
+
+  const [modeSwitch, setModeSwitch] = useState(false)
   
   // Helper function to check if a path is active
   const isActivePath = (path: string): boolean => {
@@ -52,6 +54,19 @@ export default function MainLayout({}: {}) {
       display: 'flex',
       flexDirection: 'column'
     }}>
+      {
+        modeSwitch ?
+        <Box
+          sx={{
+            width: '100vw',
+            height: '100vh',
+            bgcolor: 'red'
+          }}
+        >
+          vanakkam da  mapla
+        </Box>
+        : null
+      }
       <Box sx={{ 
         width: 'calc(100% - 4.3rem)',
         maxWidth: '1400px',
@@ -61,6 +76,7 @@ export default function MainLayout({}: {}) {
         flexDirection: 'column', 
         flex: 1
       }}>
+        {/* Header */}
         <Box sx={{ 
           display: 'flex', 
           py: '2rem',
@@ -109,6 +125,9 @@ export default function MainLayout({}: {}) {
           </Box>
           
           <Stack direction="row" spacing={3} alignItems="center">
+            <IconButton onClick={() => { setModeSwitch(true) }}>
+              <Icon baseClassName="material-symbols-outlined">mode</Icon>
+            </IconButton>
             <Box sx={{ 
               display: 'flex', 
               gap: '2.8rem',
@@ -165,10 +184,16 @@ export default function MainLayout({}: {}) {
                 bgcolor: isHighContrast() ? '#ffff00' : (theme.palette.mode === 'dark' ? '#2b3452' : '#fff')
               }}
             >
-              <Tooltip title="Light mode">
+              <Tooltip title={currentTheme === 'light' ? "Dark Mode" : "Light mode"}>
                 <IconButton 
                   size="small"
-                  onClick={() => setCurrentTheme('light')}
+                  onClick={() => {
+                    if (currentTheme === 'light') {
+                      setCurrentTheme('dark')
+                      return
+                    }
+                    setCurrentTheme('light')
+                  }}
                   sx={{
                     bgcolor: currentTheme === 'light' ? theme.palette.primary.a30 : 'transparent',
                     color: currentTheme === 'light' ? '#000' : theme.palette.text.disabled,
@@ -181,47 +206,11 @@ export default function MainLayout({}: {}) {
                     height: '36px'
                   }}
                 >
-                  <Icon baseClassName="material-symbols-outlined">light_mode</Icon>
-                </IconButton>
-              </Tooltip>
-              
-              <Tooltip title="Dark mode">
-                <IconButton 
-                  size="small"
-                  onClick={() => setCurrentTheme('dark')}
-                  sx={{
-                    bgcolor: currentTheme === 'dark' ? theme.palette.primary.a30 : 'transparent',
-                    color: currentTheme === 'dark' ? '#000' : theme.palette.text.disabled,
-                    '&:hover': {
-                      bgcolor: currentTheme === 'dark' ? theme.palette.primary.a30 : 
-                              theme.palette.mode === 'dark' ? '#3f4a6b' : '#f0f0f0'
-                    },
-                    borderRadius: '50%',
-                    width: '36px',
-                    height: '36px'
-                  }}
-                >
-                  <Icon baseClassName="material-symbols-outlined">dark_mode</Icon>
-                </IconButton>
-              </Tooltip>
-              
-              <Tooltip title="High contrast">
-                <IconButton 
-                  size="small"
-                  onClick={() => setCurrentTheme('highcontrast')}
-                  sx={{
-                    bgcolor: currentTheme === 'highcontrast' ? theme.palette.primary.a30 : 'transparent',
-                    color: currentTheme === 'highcontrast' ? '#000' : theme.palette.text.disabled,
-                    '&:hover': {
-                      bgcolor: currentTheme === 'highcontrast' ? theme.palette.primary.a30 : 
-                              theme.palette.mode === 'dark' ? '#3f4a6b' : '#f0f0f0'
-                    },
-                    borderRadius: '50%',
-                    width: '36px',
-                    height: '36px'
-                  }}
-                >
-                  <Icon baseClassName="material-symbols-outlined">contrast</Icon>
+                  {
+                    currentTheme === 'light' ?
+                    <Icon baseClassName="material-symbols-outlined">light_mode</Icon> :
+                    <Icon baseClassName="material-symbols-outlined">dark_mode</Icon>
+                  }
                 </IconButton>
               </Tooltip>
             </Stack>

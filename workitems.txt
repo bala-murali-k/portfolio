@@ -1,0 +1,13 @@
+work items
+
+Parent Level
+1. Implement the style switcher
+2. Implement different styles for the style switcher
+3. Optimize the screen and styles for android and tab devices
+4. Add interactive games
+5. Add projects on labs section
+
+Child Level
+1. Implement the style switcher
+    1.1. Test the waters by implementing a single switcher - Inprogress
+    1.2. Add animation to overall application

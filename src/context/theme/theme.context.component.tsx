@@ -27,7 +27,7 @@ interface ThemeContextComponentProps {
 
 export default function ThemeContextComponent({ children }: ThemeContextComponentProps) {
   
-  const [currentTheme, setCurrentTheme] = useState<'light' | 'dark' | 'highcontrast'>('light')
+  const [currentTheme, setCurrentTheme] = useState<'light' | 'dark' | 'highcontrast'>('dark')
   
   const theme = useMemo(() => {
     // Type assertion to let TypeScript know themeObject has the expected shape
